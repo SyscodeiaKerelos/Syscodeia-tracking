@@ -1,0 +1,19 @@
+<div class="header" [class.shadow]="showShadow" [style.background]="backgroundColor">
+  <div class="header-content">
+    <div class="header-text">
+      <h1>{{ title }}</h1>
+      <p *ngIf="subtitle" class="subtitle">{{ subtitle }}</p>
+    </div>
+    
+    <div class="header-actions" *ngIf="actions.length > 0">
+      <p-button 
+        *ngFor="let action of actions"
+        [label]="action.label" 
+        [icon]="action.icon" 
+        [severity]="action.severity || 'primary'"
+        [loading]="action.loading || false"
+        (click)="onActionClick(action)">
+      </p-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="map-container" [style.height]="config?.height || '400px'">
+  <google-map 
+    [center]="center"
+    [zoom]="zoom"
+    [options]="options"
+    (mapClick)="onMapClicked($event)"
+    (boundsChanged)="onBoundsChanged()"
+    (mapInitialized)="onMapInitialized($event)">
+    
+    <!-- Markers -->
+    <map-marker
+      *ngFor="let marker of markers; let i = index"
+      [position]="marker.position"
+      [title]="marker.title"
+      [options]="marker.options"
+      (mapClick)="onMarkerClicked($event, i)"
+      (dragend)="onMarkerDragEnd($event, i)">
+    </map-marker>
+    
+    <!-- Polylines -->
+    <map-polyline
+      *ngFor="let path of polylinePaths; let i = index"
+      [path]="path"
+      [options]="polylineOptions[i]">
+    </map-polyline>
+    
+  </google-map>
+</div> 

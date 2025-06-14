@@ -1,0 +1,90 @@
+.tracking-container {
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Header styles moved to shared header component
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.map-section {
+  height: 100%;
+}
+
+.devices-section {
+  height: 100%;
+  overflow: auto;
+}
+
+:host ::ng-deep .map-container {
+  height: 500px;
+  width: 100% !important;
+}
+
+:host ::ng-deep .p-card-body {
+  padding: 1rem;
+}
+
+:host ::ng-deep .p-card-content {
+  padding: 0;
+}
+
+.text-muted {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.device-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.device-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.location-details {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.battery-good {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.battery-medium {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.battery-low {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.api-notice {
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  
+  // Header responsive styles moved to shared header component
+}

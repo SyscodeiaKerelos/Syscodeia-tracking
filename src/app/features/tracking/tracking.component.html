@@ -1,0 +1,107 @@
+<div class="tracking-container">
+  <app-header 
+    title="Device Tracking Dashboard"
+    subtitle="Real-time device location monitoring"
+    [actions]="headerActions">
+  </app-header>
+
+  <!-- API Status Notice -->
+  <div *ngIf="apiStatusMessage" class="api-notice">
+    <p-message [severity]="apiStatusSeverity" [text]="apiStatusMessage" 
+               [closable]="false"></p-message>
+  </div>
+
+  <div class="content">
+    <div class="map-section">
+      <p-card header="Live Device Locations">
+        <google-map
+          [center]="mapCenter"
+          [zoom]="mapZoom"
+          [options]="mapOptions"
+          class="map-container">
+          
+          <map-marker
+            *ngFor="let device of getDevicesWithValidLocation(); trackBy: trackByDeviceId"
+            [position]="getMarkerPosition(device)"
+            [title]="device.name"
+            [options]="getMarkerOptions(device)"
+            (mapClick)="onMarkerClick(device)">
+          </map-marker>
+        </google-map>
+      </p-card>
+    </div>
+
+    <div class="devices-section">
+      <p-card header="Device List">
+        <p-table 
+          [value]="devicesWithLocation" 
+          [loading]="isLoading"
+          responsiveLayout="scroll">
+          
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Device Name</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Battery</th>
+              <th>Location</th>
+              <th>Last Update</th>
+            </tr>
+          </ng-template>
+          
+          <ng-template pTemplate="body" let-device>
+            <tr>
+              <td>
+                <div class="device-info">
+                  <img *ngIf="device.avatar" [src]="device.avatar" 
+                       class="device-avatar" [alt]="device.name">
+                  <span>{{ device.name }}</span>
+                </div>
+              </td>
+              <td>
+                <p-tag [value]="device.type || 'Device'" severity="info"></p-tag>
+              </td>
+              <td>
+                <p-tag 
+                  [value]="getDeviceStatus(device)"
+                  [severity]="getStatusSeverity(device)">
+                </p-tag>
+              </td>
+              <td>
+                <span *ngIf="device.battery !== undefined; else noBattery" 
+                      [class]="getBatteryClass(device.battery)">
+                  {{ device.battery }}%
+                </span>
+                <ng-template #noBattery>
+                  <span class="text-muted">N/A</span>
+                </ng-template>
+              </td>
+              <td>
+                <span *ngIf="device.location; else noLocation">
+                  {{ device.location.latitude | number:'1.6-6' }}, 
+                  {{ device.location.longitude | number:'1.6-6' }}
+                  <div *ngIf="device.location.speed !== undefined" class="location-details">
+                    Speed: {{ device.location.speed }} km/h
+                  </div>
+                </span>
+                <ng-template #noLocation>
+                  <span class="text-muted">No location data</span>
+                </ng-template>
+              </td>
+              <td>
+                <span *ngIf="device.location?.timestamp">
+                  {{ device.location.timestamp | date:'short' }}
+                </span>
+                <span *ngIf="!device.location?.timestamp" class="text-muted">
+                  Unknown
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+  </div>
+
+  <p-toast></p-toast>
+</div>
