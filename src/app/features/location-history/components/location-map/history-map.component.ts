@@ -12,7 +12,7 @@ import {
   output
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
+import { GoogleMapsModule, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
@@ -200,9 +200,9 @@ interface MapPolylineData {
                   <span class="text-gray-600">Direction:</span>
                   <span class="font-medium">{{ selectedMarkerData()?.data?.directionText }}</span>
                 </div>
-                <div class="flex justify-content-between" *ngIf="selectedMarkerData()?.data?.altitude">
+                <div class="flex justify-content-between" *ngIf="selectedMarkerData()?.data?.alt">
                   <span class="text-gray-600">Altitude:</span>
-                  <span class="font-medium">{{ selectedMarkerData()?.data?.altitude }} m</span>
+                  <span class="font-medium">{{ selectedMarkerData()?.data?.alt }} m</span>
                 </div>
               </div>
               <div class="mt-3 pt-2 border-top-1 border-gray-200">
@@ -378,7 +378,7 @@ interface MapPolylineData {
 })
 export class HistoryMapComponent implements OnInit, OnDestroy {
   readonly Math = Math;
-  @ViewChild('googleMap') googleMap!: ElementRef;
+  @ViewChild('googleMap') googleMap!: GoogleMap;
   @ViewChild('infoWindow') infoWindow!: MapInfoWindow;
   
   private readonly destroy$ = new Subject<void>();
@@ -741,7 +741,7 @@ export class HistoryMapComponent implements OnInit, OnDestroy {
         options: {
           ...this.markerOptions,
           icon: {
-            ...this.markerOptions.icon,
+            ...(this.markerOptions.icon as google.maps.Symbol),
             fillColor: this.getSpeedColor(point.speedKmh || 0)
           }
         },

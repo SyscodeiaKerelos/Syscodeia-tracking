@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, timer } from 'rxjs';
@@ -25,6 +26,7 @@ import { HeaderComponent, HeaderAction } from '../../shared/components/header/he
     TagModule,
     MessageModule,
     ProgressSpinnerModule,
+    ToastModule,
     HeaderComponent
   ],
   templateUrl: './tracking.component.html',
