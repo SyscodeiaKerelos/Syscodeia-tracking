@@ -1,0 +1,112 @@
+<div class="calendar-selector-container">
+  <!-- Device Selection -->
+  <div class="device-selection mb-4">
+    <label for="device-dropdown" class="block text-sm font-medium text-gray-700 mb-2">
+      Select Device
+    </label>
+    <p-dropdown id="device-dropdown" [options]="deviceOptions()" [(ngModel)]="selectedDeviceId"
+      (onChange)="onDeviceChange($event)" placeholder="Choose a device" optionLabel="label" optionValue="value"
+      [style]="{ width: '100%' }" [loading]="devicesLoading()" [disabled]="devicesLoading()"
+      pTooltip="Select a device to view location history" tooltipPosition="top">
+      <ng-template pTemplate="selectedItem" let-selectedOption>
+        <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+          <i class="pi pi-mobile" [class.text-green-500]="getDeviceById(selectedOption.value)?.isOnline"
+            [class.text-gray-400]="!getDeviceById(selectedOption.value)?.isOnline"></i>
+          <span>{{ selectedOption.label }}</span>
+          <span class="text-xs text-gray-500" *ngIf="getDeviceById(selectedOption.value)">
+            ({{ getDeviceById(selectedOption.value)?.type }})
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="item" let-option>
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-mobile" [class.text-green-500]="getDeviceById(option.value)?.isOnline"
+            [class.text-gray-400]="!getDeviceById(option.value)?.isOnline"></i>
+          <div class="flex flex-column">
+            <span>{{ option.label }}</span>
+            <small class="text-gray-500">{{ getDeviceById(option.value)?.type }}</small>
+          </div>
+          <div class="ml-auto" *ngIf="getDeviceById(option.value)">
+            <span class="text-xs" [class.text-green-500]="getDeviceById(option.value)?.isOnline"
+              [class.text-gray-400]="!getDeviceById(option.value)?.isOnline">
+              {{ getDeviceById(option.value)?.isOnline ? 'Online' : 'Offline' }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <!-- Month Navigation -->
+  <div class="month-navigation mb-4" *ngIf="selectedDeviceId">
+    <div class="flex align-items-center justify-content-between">
+      <button pButton type="button" icon="pi pi-chevron-left" class="p-button-text p-button-sm"
+        (click)="navigateMonth(-1)" [disabled]="navigationLoading()" pTooltip="Previous month" tooltipPosition="top">
+      </button>
+
+      <h3 class="text-lg font-semibold text-gray-800 m-0">
+        {{ currentMonthDisplay() }}
+      </h3>
+
+      <button pButton type="button" icon="pi pi-chevron-right" class="p-button-text p-button-sm"
+        (click)="navigateMonth(1)" [disabled]="navigationLoading() || isCurrentMonth()" pTooltip="Next month"
+        tooltipPosition="top">
+      </button>
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="calendar-grid" *ngIf="selectedDeviceId">
+    <div class="calendar-header">
+      <div class="calendar-day-header" *ngFor="let day of weekDays">
+        {{ day }}
+      </div>
+    </div>
+
+    <div class="calendar-body" *ngIf="!calendarLoading(); else loadingSkeleton">
+      <div class="calendar-day" *ngFor="let day of calendarDays(); trackBy: trackByDay"
+        [class.other-month]="!day.isCurrentMonth" [class.available]="day.hasData" [class.selected]="day.isSelected"
+        [class.today]="day.isToday" [class.clickable]="day.hasData && day.isCurrentMonth" (click)="onDateSelect(day)"
+        [pTooltip]="getDateTooltip(day)" tooltipPosition="top">
+        <span class="day-number">{{ day.day }}</span>
+        <div class="day-indicator" *ngIf="day.hasData && day.isCurrentMonth">
+          <i class="pi pi-circle-fill text-xs"></i>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #loadingSkeleton>
+      <div class="calendar-body">
+        <p-skeleton *ngFor="let i of skeletonArray" width="2rem" height="2rem" borderRadius="4px"
+          class="calendar-day-skeleton">
+        </p-skeleton>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Selected Date Info -->
+  <div class="selected-date-info mt-4" *ngIf="selectedDate()">
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-calendar text-blue-600"></i>
+        <span class="font-medium text-blue-800">
+          Selected: {{ formatSelectedDate() }}
+        </span>
+      </div>
+      <div class="text-sm text-blue-600 mt-1" *ngIf="selectedDeviceName()">
+        Device: {{ selectedDeviceName() }}
+      </div>
+    </div>
+  </div>
+
+  <!-- No Device Selected State -->
+  <div class="no-device-state" *ngIf="!selectedDeviceId">
+    <div class="text-center py-8">
+      <i class="pi pi-mobile text-4xl text-gray-300 mb-3"></i>
+      <h4 class="text-gray-600 mb-2">No Device Selected</h4>
+      <p class="text-gray-500 text-sm">
+        Please select a device to view available dates
+      </p>
+    </div>
+  </div>
+</div>

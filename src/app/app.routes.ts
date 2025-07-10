@@ -17,6 +17,16 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'location-history',
+    loadChildren: () => import('./features/location-history/location-history.module').then(m => m.LocationHistoryModule),
+    canActivate: [AuthGuard],
+    data: {
+      preload: true,
+      title: 'Location History',
+      description: 'View and analyze location tracking data'
+    }
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }
